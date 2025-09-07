@@ -1,0 +1,24 @@
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+DATABASE_URL = "sqlite:///./test.db"  # Change this for PostgreSQL or other DB in production
+
+# SQLAlchemy engine and session
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+def init_db():
+    Base.metadata.create_all(bind=engine)  # Creates tables if they do not exist
+
+# Create the tables when the app starts
+init_db()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
