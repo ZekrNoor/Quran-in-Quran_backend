@@ -1,3 +1,5 @@
 {
+    "app":"zekrnoor",
+    "port":80,
     "args": [ "fastapi dev app/main.py" ]
 }
