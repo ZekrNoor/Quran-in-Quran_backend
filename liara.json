@@ -1,5 +1,5 @@
 {
     "app":"zekrnoor",
     "port":80,
-    "args": [ "fastapi dev app/main.py" ]
+    "args": [ "uvicorn app.main:app --host 0.0.0.0 --reload" ]
 }
