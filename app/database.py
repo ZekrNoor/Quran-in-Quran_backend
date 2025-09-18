@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
 
-DATABASE_URL = "sqlite:///./test.db"  # Change this for PostgreSQL or other DB in production
+DATABASE_URL = DATABASE_URL = os.getenv("DATABASE_URL")
 
 # SQLAlchemy engine and session
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
