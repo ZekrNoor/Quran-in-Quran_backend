@@ -54,7 +54,6 @@ def get_current_user(
     return user
 
 
-
 # Helper function to authenticate the user and get the token
 def authenticate_user(db: Session, username: str, password: str):
     # Check if user exists by phone or username

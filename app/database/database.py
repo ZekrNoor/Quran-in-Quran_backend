@@ -47,7 +47,7 @@ def run_cli():
     parser.add_argument(
         "command",
         choices=["init", "rebuild", "test"],
-        help="Command to run: init (initialize db), rebuild (drop & recreate db), test (test connection)"
+        help="Command to run: init (initialize db), rebuild (drop & recreate db), test (test connection)",
     )
     args = parser.parse_args()
 

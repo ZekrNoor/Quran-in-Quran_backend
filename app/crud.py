@@ -1,5 +1,9 @@
 from sqlalchemy.orm import Session
-from .database.models import User as DBUser, Profile as DBProfile, Bookmark as DBBookmark
+from .database.models import (
+    User as DBUser,
+    Profile as DBProfile,
+    Bookmark as DBBookmark,
+)
 from .auth_core import get_password_hash
 
 
