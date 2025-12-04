@@ -1,11 +1,11 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
 from .routers import auth, users, bookmarks
-from .database import init_db
+
+# Load environment variables from the .env file
+load_dotenv()
 
 app = FastAPI()
-
-# Initialize database
-init_db()
 
 # Include the routers for auth, users, and bookmarks
 app.include_router(auth.router, prefix="/auth", tags=["auth"])

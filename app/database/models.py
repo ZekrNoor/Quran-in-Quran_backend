@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
 
+
 class Profile(Base):
     __tablename__ = "profiles"
 
@@ -13,10 +14,14 @@ class Profile(Base):
     email = Column(String, unique=True)
     nickname = Column(String, unique=True)
 
+    # Column to store the image URL or path in object storage
+    image_url = Column(String, nullable=True)
+
     # One-to-one relationship with User
     user_id = Column(Integer, ForeignKey("users.id"))
 
     user = relationship("User", back_populates="profile")
+
 
 # User model
 class User(Base):
@@ -33,6 +38,7 @@ class User(Base):
     bookmarks = relationship("Bookmark", back_populates="owner")
     notes = relationship("Note", back_populates="owner")
 
+
 class Bookmark(Base):
     __tablename__ = "bookmarks"
 
@@ -42,6 +48,7 @@ class Bookmark(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="bookmarks")
+
 
 class Note(Base):
     __tablename__ = "notes"
