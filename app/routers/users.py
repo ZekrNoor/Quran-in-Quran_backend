@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
-from app.database.schemas import UserCreate, User, Profile
+from app.database.schemas import UserCreate, User, Profile as ProfileSchema
+from app.database.models import Profile  # Import the ORM model
 from app.crud import create_user, get_user_by_id, get_user_by_username
 from app.routers.auth import get_current_user
 from app.database.database import SessionLocal, get_db
@@ -44,13 +45,13 @@ async def upload_profile_image(
     db_user = current_user
 
     # Upload image and get URL
-    image_url = upload_file(image, db_user.username)
+    image_url = await upload_file(image, db_user.username)
 
     if image_url:
         # Find the user's profile and update the image URL
         profile = db.query(Profile).filter(Profile.user_id == db_user.id).first()
         if profile:
-            profile.profile_image_url = image_url
+            profile.image_url = image_url
             db.commit()
             db.refresh(profile)
             return {
