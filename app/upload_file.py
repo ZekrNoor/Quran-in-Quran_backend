@@ -5,7 +5,7 @@ import time
 
 
 # Upload a file to a bucket
-def upload_file(file, file_name=None):
+def upload_file(file, file_name='file'):
     # Get S3 client from utils.py
     s3_client = get_s3_client()
     if not s3_client:
@@ -14,7 +14,7 @@ def upload_file(file, file_name=None):
     if not bucket_name:
         raise HTTPException(status_code=500, detail="Bucket name not configured")
 
-    filename = file_name + "_" + int(time.time())
+    filename = file_name + "_" + str(int(time.time()))
     try:
         s3_client.upload_fileobj(file, bucket_name, filename)
         return {"message": f"File '{filename}' uploaded successfully."}
