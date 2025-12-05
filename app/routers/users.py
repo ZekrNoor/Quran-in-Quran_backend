@@ -3,21 +3,12 @@ from sqlalchemy.orm import Session
 from app.database.schemas import UserCreate, User, Profile
 from app.crud import create_user, get_user_by_id, get_user_by_username
 from app.routers.auth import get_current_user
-from app.database.database import SessionLocal
+from app.database.database import SessionLocal, get_db
 from app.upload_file import upload_file_section
 from app.utils import get_s3_client
 import os
 
 router = APIRouter()
-
-
-# Dependency to get the database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 # Register a new user
