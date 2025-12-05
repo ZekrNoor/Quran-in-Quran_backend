@@ -1,19 +1,22 @@
-import streamlit as st
+from fastapi import HTTPException
+from app.utils import get_s3_client
+import os
+import time
 
 
 # Upload a file to a bucket
-def upload_file(s3_client, bucket_name, file, file_name):
+def upload_file(file, file_name=None):
+    # Get S3 client from utils.py
+    s3_client = get_s3_client()
+    if not s3_client:
+        raise HTTPException(status_code=500, detail="S3 client not configured properly")
+    bucket_name = os.getenv("LIARA_BUCKET_NAME")
+    if not bucket_name:
+        raise HTTPException(status_code=500, detail="Bucket name not configured")
+
+    filename = file_name + "_" + int(time.time())
     try:
-        s3_client.upload_fileobj(file, bucket_name, file_name)
-        st.success(f"File '{file_name}' uploaded successfully.")
+        s3_client.upload_fileobj(file, bucket_name, filename)
+        return {"message": f"File '{filename}' uploaded successfully."}
     except Exception as e:
-        st.error(f"Error uploading file: {e}")
-
-
-# Upload file section
-def upload_file_section(s3_client, bucket_name):
-    st.header("Upload File")
-    bucket_name = st.text_input("Enter Bucket Name", value=bucket_name)
-    uploaded_file = st.file_uploader("Choose a file to upload")
-    if uploaded_file and st.button("Upload"):
-        upload_file(s3_client, bucket_name, uploaded_file, uploaded_file.name)
+        HTTPException(status_code=500, detail=f"Error uploading file: {e}")

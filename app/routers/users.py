@@ -4,8 +4,7 @@ from app.database.schemas import UserCreate, User, Profile
 from app.crud import create_user, get_user_by_id, get_user_by_username
 from app.routers.auth import get_current_user
 from app.database.database import SessionLocal, get_db
-from app.upload_file import upload_file_section
-from app.utils import get_s3_client
+from app.upload_file import upload_file
 import os
 
 router = APIRouter()
@@ -44,15 +43,8 @@ async def upload_profile_image(
     # Get the current authenticated user
     db_user = current_user
 
-    # Get S3 client from utils.py
-    s3_client = get_s3_client()
-    if not s3_client:
-        raise HTTPException(status_code=500, detail="S3 client not configured properly")
-
     # Upload image and get URL
-    image_url = upload_file_section(
-        s3_client, image, db_user.username
-    )  # Pass S3 client, file, and user data
+    image_url = upload_file(image, db_user.username)
 
     if image_url:
         # Find the user's profile and update the image URL
