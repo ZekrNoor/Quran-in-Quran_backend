@@ -17,6 +17,6 @@ def upload_file(file, file_name='file'):
     filename = file_name + "_" + str(int(time.time()))
     try:
         s3_client.upload_fileobj(file, bucket_name, filename)
-        return {"message": f"File '{filename}' uploaded successfully."}
+        return filename
     except Exception as e:
-        HTTPException(status_code=500, detail=f"Error uploading file: {e}")
+        raise HTTPException(status_code=500, detail=f"Error uploading file: {e}")
