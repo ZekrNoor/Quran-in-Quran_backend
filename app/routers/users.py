@@ -1,7 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
+<<<<<<< HEAD
 from sqlalchemy.orm import Session
 from app.database.schemas import UserCreate, User, Profile as ProfileSchema
 from app.database.models import Profile  # Import the ORM model
+=======
+from sqlalchemy.orm import Session, joinedload
+from app.database.schemas import UserCreate, User as UserSchema, Profile as ProfileSchema
+from app.database.models import Profile, User
+>>>>>>> c3dfa18 (bugfix)
 from app.crud import create_user, get_user_by_id, get_user_by_username
 from app.routers.auth import get_current_user
 from app.database.database import SessionLocal, get_db
@@ -12,7 +18,7 @@ router = APIRouter()
 
 
 # Register a new user
-@router.post("/register", response_model=User)
+@router.post("/register", response_model=UserSchema)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = get_user_by_username(db, user.username)
     if db_user:
@@ -26,11 +32,13 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 
 # Get user profile
-@router.get("/users/{user_id}", response_model=User)
-def get_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = get_user_by_id(db, user_id)
+@router.get("/profile")
+def get_user(db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_user)):
+    db_user = db.query(User).options(joinedload(User.profile)).filter(User.id == current_user.id).first()
+
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
+    
     return db_user
 
 
@@ -39,7 +47,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 async def upload_profile_image(
     image: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: UserSchema = Depends(get_current_user),
 ):
     # Get the current authenticated user
     db_user = current_user

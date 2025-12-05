@@ -58,4 +58,4 @@ def generate_url(bucket_name, filename):
     if not endpoint_url:
         raise HTTPException(status_code=500, detail="Endpoint URL not configured")
     endpoint_url = endpoint_url.replace("https://", "").replace("http://", "")  
-    return f"{bucket_name}.{endpoint_url}/{filename}"
+    return f"https://{bucket_name}.{endpoint_url}/{filename}"
