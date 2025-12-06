@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
-<<<<<<< HEAD
 from sqlalchemy.orm import Session
 from app.database.schemas import UserCreate, User, Profile as ProfileSchema
 from app.database.models import Profile  # Import the ORM model
-=======
 from sqlalchemy.orm import Session, joinedload
-from app.database.schemas import UserCreate, User as UserSchema, Profile as ProfileSchema
+from app.database.schemas import (
+    UserCreate,
+    User as UserSchema,
+    Profile as ProfileSchema,
+)
 from app.database.models import Profile, User
->>>>>>> c3dfa18 (bugfix)
 from app.crud import create_user, get_user_by_id, get_user_by_username
 from app.routers.auth import get_current_user
 from app.database.database import SessionLocal, get_db
@@ -33,12 +34,19 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 # Get user profile
 @router.get("/profile")
-def get_user(db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_user)):
-    db_user = db.query(User).options(joinedload(User.profile)).filter(User.id == current_user.id).first()
+def get_user(
+    db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_user)
+):
+    db_user = (
+        db.query(User)
+        .options(joinedload(User.profile))
+        .filter(User.id == current_user.id)
+        .first()
+    )
 
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     return db_user
 
 
